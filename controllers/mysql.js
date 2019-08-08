@@ -2,7 +2,7 @@ var mysql = require('mysql');
 var pool = mysql.createPool({
     host    : 'localhost',
     user    : 'root',
-    password: '2020xxx520',
+    password: '123456',
     database: 'data',
     port    : '3306'
 });
@@ -42,26 +42,31 @@ let query = (sql, values) => {
 
 // 注册用户
 exports.insertData = (value) => {
-    let _sql = "insert into login set name=?,password=?;"
+    let _sql = "insert into user_data set name=?,password=?;"
     return query(_sql, value)
 }
 // 删除用户
 exports.deleteUserData = (name) => {
-    let _sql = `delete from users where name="${name}";`
+    let _sql = `delete from user_data where name="${name}";`
     return query(_sql)
 }
 // 查找用户
 exports.findUserData = (name) => {
-    let _sql = `select * from login where name="${name}";`
+    let _sql = `select * from user_data where name="${name}";`
     return query(_sql)
-}
-// 注册用户
-exports.imgData = (value) => {
-    let _sql = "insert into imgMessage set code=?,imgName=?,imgUrl=?,remark=?;"
-    return query(_sql, value)
 }
 //清空数据
 exports.deleteAll = (table)=>{
     let _sql = `delete from ${table};`
     return query(_sql)
+}
+//存入留言数据
+exports.setLeaveWords = (value) => {
+    let _sql = "insert into leave_words set name=?,remark=?,email=?,phone=?,time=?;"
+    return query(_sql, value)
+}
+//取出留言数据
+exports.getLeaveWords = (value) => {
+    let _sql = "select * from leave_words order by time desc"
+    return query(_sql, value)
 }

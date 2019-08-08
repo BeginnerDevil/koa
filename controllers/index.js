@@ -1,11 +1,13 @@
 var userModel = require('./mysql');
 //注册
-var fn_signin = async (ctx, next) => {
+var fn_signup = async (ctx, next) => {
 	let {
 		name,
 		password
 	} = ctx.request.body;
-	if (selectName(name) == true) {
+	let queryres = await userModel.findUserData(name);
+	console.log(queryres)
+	if (queryres.length < 1) {
 		await userModel.insertData([name, password]).then(res => {
 			console.log('注册成功');
 			//注册成功
@@ -15,6 +17,8 @@ var fn_signin = async (ctx, next) => {
 			};
 		}).catch(Response => {
 			console.log('注册失败');
+			console.log(Response);
+
 			//注册失败
 			ctx.body = {
 				code: 0,
@@ -29,30 +33,14 @@ var fn_signin = async (ctx, next) => {
 		};
 	}
 };
-var selectName = (name) => {
-	console.log(name)
-	userModel.findUserData(name).then(res => {
-		console.log(res)
-		if (res) {
-			return true
-		} else if (res[0].name == name) {
-			return false
-		} else {
-			return true
-		}
-
-	}).catch(Response => {
-		return false
-	})
-}
 //登陆
-var fn_signup = async (ctx, next) => {
+var fn_signin = async (ctx, next) => {
 	let {
 		name,
 		password
 	} = ctx.request.body;
 	await userModel.findUserData(name).then(res => {
-		console.log('上传成功');
+		console.log('查找成功');
 		//登陆成功
 		console.log(res)
 		if (res[0].password == password) {
@@ -98,6 +86,7 @@ var fn_delete = async (ctx, next) => {
 			code: 0,
 			message: '删除失败'
 		};
+		
 	})
 }
 module.exports = {
